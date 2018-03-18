@@ -1,6 +1,8 @@
 """Datastructures for sizing images."""
 from __future__ import unicode_literals
 
+import warnings
+
 from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 from ..settings import (
@@ -142,12 +144,20 @@ class SizedImage(ProcessedImage, dict):
                     if resized_storage_path and not self.storage.exists(
                         resized_storage_path
                     ):
-                        self.create_resized_image(
-                            path_to_image=self.path_to_image,
-                            save_path_on_storage=resized_storage_path,
-                            width=width,
-                            height=height
-                        )
+                        try:
+                            self.create_resized_image(
+                                path_to_image=self.path_to_image,
+                                save_path_on_storage=resized_storage_path,
+                                width=width,
+                                height=height
+                            )
+                        except (OSError, IOError, EOFError):
+                            # Do we really want to crash on bad imges?
+                            if getattr(settings, 'VERSATILEIMAGEFIELD_CRASH_ON_BAD', True):
+                                raise
+                            # Otherwise just throw a warning
+                            warnings.warn('Unable to resize image %s' % self.path_to_image)
+                            return
 
                         resized_url = self.storage.url(resized_storage_path)
 

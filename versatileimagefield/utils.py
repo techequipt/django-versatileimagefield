@@ -6,6 +6,7 @@ import os
 
 import magic
 from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings
 
 from .settings import (
     IMAGE_SETS,
@@ -223,10 +224,16 @@ def build_versatileimagefield_url_set(image_instance, size_set, request=None):
     to_return = {}
     if image_instance or image_instance.field.placeholder_image:
         for key, image_key in size_set:
-            img_url = get_url_from_image_key(image_instance, image_key)
-            if request is not None:
-                img_url = request.build_absolute_uri(img_url)
-            to_return[key] = img_url
+            try:
+                img_url = get_url_from_image_key(image_instance, image_key)
+                if request is not None:
+                    img_url = request.build_absolute_uri(img_url)
+                to_return[key] = img_url
+            except (OSError, IOError, EOFError):
+                if getattr(settings, "VERSATILEIMAGEFIELD_CRASH_ON_BAD", True):
+                    to_return[key] = ""
+                else:
+                    raise
     return to_return
 
 

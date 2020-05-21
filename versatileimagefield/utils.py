@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from functools import reduce
 
 import os
@@ -34,6 +32,7 @@ MIME_TYPE_TO_PIL_IDENTIFIER = {
     'image/tiff': 'TIFF',
     'image/x-xbitmap': 'XBM',
     'image/x-xpm': 'XPM',
+    'image/webp': 'WEBP',
 }
 
 

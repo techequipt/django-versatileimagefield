@@ -1,10 +1,6 @@
 """Datastructures for sizing images."""
-from __future__ import unicode_literals
-
 import warnings
-
 from django.conf import settings
-from django.utils.encoding import python_2_unicode_compatible
 from ..settings import (
     cache,
     VERSATILEIMAGEFIELD_CACHE_LENGTH
@@ -20,7 +16,6 @@ class MalformedSizedImageKey(Exception):
     pass
 
 
-@python_2_unicode_compatible
 class SizedImageInstance(DeleteAndClearCacheMixIn):
     """A simple class for images created by SizedImage."""
 

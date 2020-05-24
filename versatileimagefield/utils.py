@@ -226,7 +226,7 @@ def build_versatileimagefield_url_set(image_instance, size_set, request=None):
             try:
                 img_url = get_url_from_image_key(image_instance, image_key)
                 if request is not None:
-                    img_url = request.build_absolute_uri(img_url)
+                    img_url = request.build_absolute_uri(str(img_url))
                 to_return[key] = img_url
             except (OSError, IOError, EOFError):
                 if getattr(settings, "VERSATILEIMAGEFIELD_CRASH_ON_BAD", True):
